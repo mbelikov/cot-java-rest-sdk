@@ -2,9 +2,13 @@ package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRule;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * A Collection of binaries, or, rather, their metadata.
@@ -23,7 +27,14 @@ public class BinariesCollection extends IterableObjectPagination<Binary> {
         Integer pageSize
     ) {
         super(
-            binaryJson -> gson.fromJson(binaryJson, Binary.class),
+                new ObjectMapper<Binary>() {
+                    @Override
+                    public Binary apply(JsonElement jsonElement) {
+                        return gson.fromJson(jsonElement, Binary.class);
+                    }
+                },
+
+//            binaryJson -> gson.fromJson(binaryJson, Binary.class),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

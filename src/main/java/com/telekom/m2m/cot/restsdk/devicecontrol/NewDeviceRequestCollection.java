@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Represents a pageable NewDeviceRequest collection.
@@ -37,7 +38,14 @@ public class NewDeviceRequestCollection extends IterableObjectPagination<NewDevi
         final int pageSize
     ) {
         super(
-            newDeviceRequestJson -> new NewDeviceRequest(gson.fromJson(newDeviceRequestJson, ExtensibleObject.class)),
+                new ObjectMapper<NewDeviceRequest>() {
+                    @Override
+                    public NewDeviceRequest apply(JsonElement jsonElement) {
+                        return new NewDeviceRequest(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            newDeviceRequestJson -> new NewDeviceRequest(gson.fromJson(newDeviceRequestJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

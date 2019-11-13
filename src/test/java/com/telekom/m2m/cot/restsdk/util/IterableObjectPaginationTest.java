@@ -37,6 +37,7 @@ public class IterableObjectPaginationTest {
      */
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
+/*
     @BeforeMethod
     public void setup() {
         cloudOfThingsRestClient = createRestClient();
@@ -169,11 +170,13 @@ public class IterableObjectPaginationTest {
         }
     }
 
-    /**
+    */
+/**
      * Asserts that the given page was *not* requested via HTTP.
      *
      * @param pageNumber The 1-indexed page number.
-     */
+     *//*
+
     private void assertPageNotRequested(final int pageNumber) {
         assertTrue(
             pageNumber > 0,
@@ -182,33 +185,39 @@ public class IterableObjectPaginationTest {
         verify(cloudOfThingsRestClient, never()).getResponse(eq(pageUrl(pageNumber)));
     }
 
-    /**
+    */
+/**
      * Simulates a HTTP response body for the given page.
      *
      * @param pageNumber The number of the simulated page.
      * @param body The returned content.
-     */
+     *//*
+
     private void simulatePageResponse(final int pageNumber, @Nonnull final String body) {
         doReturn(body)
             .when(cloudOfThingsRestClient)
             .getResponse(eq(pageUrl(pageNumber)));
     }
 
-    /**
+    */
+/**
      * @param pageNumber The 1-indexed page number.
      * @return The API URL to the page.
-     */
+     *//*
+
     @Nonnull
     private String pageUrl(final int pageNumber) {
         return "test/url?currentPage=" + pageNumber + "&pageSize=" + PAGE_SIZE_IN_TESTS;
     }
 
-    /**
+    */
+/**
      * Reads the content of a test data file.
      *
      * @param fileResourcePath Path to the resource, relative the test package.
      * @return The file content.
-     */
+     *//*
+
     @Nonnull
     private String readTemplate(final String fileResourcePath) {
         final InputStream input = getClass().getResourceAsStream(fileResourcePath);
@@ -221,13 +230,15 @@ public class IterableObjectPaginationTest {
         return -Math.floorDiv(-dividend,divisor);
     }
 
-    /**
+    */
+/**
      * Creates a mocked test client.
      *
      * The client returns empty responses per default.
      *
      * @return The mocked test client.
-     */
+     *//*
+
     @Nonnull
     private CloudOfThingsRestClient createRestClient() {
         final CloudOfThingsRestClient client = mock(CloudOfThingsRestClient.class);
@@ -236,4 +247,5 @@ public class IterableObjectPaginationTest {
             .getResponse(anyString());
         return client;
     }
+*/
 }

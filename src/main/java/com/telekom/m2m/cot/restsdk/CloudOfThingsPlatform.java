@@ -2,7 +2,6 @@ package com.telekom.m2m.cot.restsdk;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
@@ -19,6 +18,7 @@ import com.telekom.m2m.cot.restsdk.realtime.CepApi;
 import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRuleApi;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi;
 import com.telekom.m2m.cot.restsdk.users.UserApi;
+import com.telekom.m2m.cot.restsdk.util.Base64;
 
 import okhttp3.OkHttpClient;
 
@@ -79,9 +79,9 @@ public class CloudOfThingsPlatform {
      */
     public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host) {
         return new CloudOfThingsPlatform(host,
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)) + "/"
-                        + new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)));
+                new String(Base64.decode(REGISTERDEVICE_TENANT)) + "/"
+                        + new String(Base64.decode(REGISTERDEVICE_USERNAME)),
+                new String(Base64.decode(REGISTERDEVICE_PASSWORD)));
     }
     
     /**
@@ -98,8 +98,8 @@ public class CloudOfThingsPlatform {
      *         properties.
      */
     public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host, String proxyHost, int proxyPort) {
-        return new CloudOfThingsPlatform(host, new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)), proxyHost, proxyPort);
+        return new CloudOfThingsPlatform(host, new String(Base64.decode(REGISTERDEVICE_USERNAME)),
+                new String(Base64.decode(REGISTERDEVICE_PASSWORD)), proxyHost, proxyPort);
     }
 
     /**

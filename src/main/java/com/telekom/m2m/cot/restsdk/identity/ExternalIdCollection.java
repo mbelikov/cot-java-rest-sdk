@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.devicecontrol.NewDeviceRequest;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Represents a pageable ExternalId collection.
@@ -36,7 +39,14 @@ public class ExternalIdCollection extends IterableObjectPagination<ExternalId> {
         final int pageSize
     ) {
         super(
-            externalIdJson -> gson.fromJson(externalIdJson, ExternalId.class),
+                new ObjectMapper<ExternalId>() {
+                    @Override
+                    public ExternalId apply(JsonElement jsonElement) {
+                        return gson.fromJson(jsonElement, ExternalId.class);
+                    }
+                },
+
+//            externalIdJson -> gson.fromJson(externalIdJson, ExternalId.class),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

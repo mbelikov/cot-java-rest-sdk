@@ -1,13 +1,18 @@
 package com.telekom.m2m.cot.restsdk.retentionrule;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.measurement.Measurement;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 public class RetentionRuleCollection extends IterableObjectPagination<RetentionRule> {
 
@@ -31,7 +36,14 @@ public class RetentionRuleCollection extends IterableObjectPagination<RetentionR
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            ruleJson ->  new RetentionRule(gson.fromJson(ruleJson, ExtensibleObject.class)),
+                new ObjectMapper<RetentionRule>() {
+                    @Override
+                    public RetentionRule apply(JsonElement jsonElement) {
+                        return new RetentionRule(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            ruleJson ->  new RetentionRule(gson.fromJson(ruleJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,
@@ -51,9 +63,22 @@ public class RetentionRuleCollection extends IterableObjectPagination<RetentionR
      */
     public RetentionRule[] getRetentionRules() {
         final JsonArray jsonRules = getJsonArray();
-        return (jsonRules == null) ? new RetentionRule[0] : StreamSupport.stream(jsonRules.spliterator(), false).
-                map(objectMapper).
-                toArray(RetentionRule[]::new);
+
+        if (jsonRules == null) return new RetentionRule[0];
+
+        Iterator<JsonElement> it = jsonRules.iterator();
+        final ArrayList<RetentionRule> al = new ArrayList<>();
+        while (it.hasNext()) {
+            al.add( objectMapper.apply(it.next()) );
+        }
+
+        RetentionRule[] res = new RetentionRule[al.size()];
+        return al.toArray(res);
+
+
+//        return (jsonRules == null) ? new RetentionRule[0] : StreamSupport.stream(jsonRules.spliterator(), false).
+//                map(objectMapper).
+//                toArray(RetentionRule[]::new);
     }
 
 }

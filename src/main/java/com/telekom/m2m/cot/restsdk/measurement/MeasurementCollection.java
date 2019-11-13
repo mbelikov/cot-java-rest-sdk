@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.users.RoleReference;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Represents a pageable Measurement collection.
@@ -40,7 +42,14 @@ public class MeasurementCollection extends IterableObjectPagination<Measurement>
         final int pageSize
     ) {
         super(
-            measurementJson -> new Measurement(gson.fromJson(measurementJson, ExtensibleObject.class)),
+                new ObjectMapper<Measurement>() {
+                    @Override
+                    public Measurement apply(JsonElement jsonElement) {
+                        return new Measurement(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            measurementJson -> new Measurement(gson.fromJson(measurementJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

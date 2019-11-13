@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * @author chuhlich
@@ -33,7 +35,14 @@ public class EventCollection extends IterableObjectPagination<Event> {
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            eventJson -> new Event(gson.fromJson(eventJson, ExtensibleObject.class)),
+                new ObjectMapper<Event>() {
+                    @Override
+                    public Event apply(JsonElement jsonElement) {
+                        return new Event(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            eventJson -> new Event(gson.fromJson(eventJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

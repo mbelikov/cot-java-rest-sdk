@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * The class that defines the operations on a collection of user references.
@@ -37,7 +38,14 @@ public class UserReferenceCollection extends IterableObjectPagination<UserRefere
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            userReferenceJson -> new UserReference(gson.fromJson(userReferenceJson, ExtensibleObject.class)),
+                new ObjectMapper<UserReference>() {
+                    @Override
+                    public UserReference apply(JsonElement jsonElement) {
+                        return new UserReference(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//                userReferenceJson -> new UserReference(gson.fromJson(userReferenceJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

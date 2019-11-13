@@ -5,7 +5,6 @@ import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
-import java.util.Base64;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -16,8 +15,11 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRequest;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartResponse;
+import com.telekom.m2m.cot.restsdk.util.Base64;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import org.apache.commons.codec.binary.StringUtils;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -33,11 +35,15 @@ import okhttp3.ResponseBody;
  */
 public class CloudOfThingsRestClient {
 
-    private final Gson gson = GsonUtils.createGson();
+    private final Gson gson = createGson();
     private final String encodedAuthString;
     private final String host;
 
     protected OkHttpClient client;
+
+    protected Gson createGson() {
+        return GsonUtils.createGson();
+    }
 
     // This is an automatic clone of {@link #client}, which can have it's own, much longer, timeouts, and because we
     // don't want a real time server advice to change timeout behaviour for the whole application:
@@ -55,7 +61,7 @@ public class CloudOfThingsRestClient {
     public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
         this.host = host;
         try {
-            encodedAuthString = Base64.getEncoder().encodeToString((user + ":" + password).getBytes("utf-8"));
+            encodedAuthString = Base64.encodeToString(user + ":" + password);
         } catch (UnsupportedEncodingException e) {
             throw new CotSdkException("Error generating auth string.", e);
         }

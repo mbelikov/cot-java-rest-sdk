@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Class that defines the methods of group collection. Group collections are
@@ -37,7 +39,14 @@ public class GroupCollection extends IterableObjectPagination<Group> {
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            groupJson -> new Group(gson.fromJson(groupJson, ExtensibleObject.class)),
+                new ObjectMapper<Group>() {
+                    @Override
+                    public Group apply(JsonElement jsonElement) {
+                        return new Group(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            groupJson -> new Group(gson.fromJson(groupJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

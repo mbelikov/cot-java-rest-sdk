@@ -13,10 +13,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Simplifies iteration over paged result by providing access to paged objects
- * via {@link Stream}.
+ * Simplifies iteration over paged result by providing access to paged objects.
  *
- * The object stream can be accessed via {@link #stream()}. It will read pages
+ * The object stream can be accessed via {@link #createPageIterator())}. It will read pages
  * *only* if necessary and forward until the end of result (the last page) is
  * reached.
  *
@@ -28,7 +27,7 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
      * Converts JSON objects into the object that are provided during iteration.
      */
     @Nonnull
-    protected final Function<JsonElement, T> objectMapper;
+    protected final ObjectMapper<T> objectMapper;
 
     /**
      * Creates a pagination with default page size.
@@ -42,7 +41,7 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      */
     public IterableObjectPagination(
-        @Nonnull final Function<JsonElement, T> objectMapper,
+        @Nonnull final ObjectMapper<T> objectMapper,
         @Nonnull final CloudOfThingsRestClient cloudOfThingsRestClient,
         @Nonnull final String relativeApiUrl,
         @Nonnull final Gson gson,
@@ -74,7 +73,7 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
      * @param pageSize                max number of retrieved elements per page.
      */
     public IterableObjectPagination(
-        @Nonnull final Function<JsonElement, T> objectMapper,
+        @Nonnull final ObjectMapper<T> objectMapper,
         @Nonnull final CloudOfThingsRestClient cloudOfThingsRestClient,
         @Nonnull final String relativeApiUrl,
         @Nonnull final Gson gson,
@@ -93,29 +92,6 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
             pageSize
         );
         this.objectMapper = Objects.requireNonNull(objectMapper);
-    }
-
-    /**
-     * Returns a {@link Stream} that reads objects until the last page is reached.
-     *
-     * The stream can be used only *once* for iteration.
-     *
-     * @return Object stream.
-     */
-    @Nonnull
-    public Stream<T> stream() {
-        return StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize(
-                createPageIterator(),
-                // Iteration attributes:
-                // DISTINCT: There are no duplicates in the returned items.
-                // NONNULL: There are *only* item objects in the list.
-                Spliterator.DISTINCT | Spliterator.NONNULL
-            ),
-            false
-        )
-            .flatMap(jsonArray -> StreamSupport.stream(jsonArray.spliterator(), false))
-            .map(this.objectMapper);
     }
 
     @Nonnull

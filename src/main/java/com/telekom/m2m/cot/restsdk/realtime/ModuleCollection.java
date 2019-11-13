@@ -2,9 +2,13 @@ package com.telekom.m2m.cot.restsdk.realtime;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.users.RoleReference;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * This class represents a collection of {@link Module}s.
@@ -34,7 +38,14 @@ public class ModuleCollection extends IterableObjectPagination<Module> {
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            moduleJson -> gson.fromJson(moduleJson, Module.class),
+                new ObjectMapper<Module>() {
+                    @Override
+                    public Module apply(JsonElement jsonElement) {
+                        return gson.fromJson(jsonElement, Module.class);
+                    }
+                },
+
+//            moduleJson -> gson.fromJson(moduleJson, Module.class),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

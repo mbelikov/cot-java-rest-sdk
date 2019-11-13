@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * The class that defines methods related to the role reference collections.
@@ -37,7 +38,14 @@ public class RoleReferenceCollection extends IterableObjectPagination<RoleRefere
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            roleReferenceJson -> new RoleReference(gson.fromJson(roleReferenceJson, ExtensibleObject.class)),
+                new ObjectMapper<RoleReference>() {
+                    @Override
+                    public RoleReference apply(JsonElement jsonElement) {
+                        return new RoleReference(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            roleReferenceJson -> new RoleReference(gson.fromJson(roleReferenceJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

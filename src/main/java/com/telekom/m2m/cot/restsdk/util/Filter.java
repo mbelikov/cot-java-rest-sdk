@@ -93,8 +93,12 @@ public class Filter {
         public FilterBuilder byDate(Date from, Date to) {
             //instance.dateFrom = from;
             //instance.dateTo = to;
-            instance.arguments.put("dateFrom", CotUtils.convertDateToTimestring(from));
-            instance.arguments.put("dateTo", CotUtils.convertDateToTimestring(to));
+            instance.arguments.put("dateFrom",
+                    DateTimeUtil.urlfy(
+                            DateTimeUtil.convertDateToString(from)/*CotUtils.convertDateToTimestring(from)*/)); // todo remove deadcode
+            instance.arguments.put("dateTo",
+                    DateTimeUtil.urlfy(
+                            DateTimeUtil.convertDateToString(to)/*CotUtils.convertDateToTimestring(to)*/)); // todo remove deadcode
             return this;
         }
 

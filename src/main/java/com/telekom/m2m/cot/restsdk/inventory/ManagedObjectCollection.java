@@ -2,9 +2,13 @@ package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.alarm.Alarm;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Represents a pageable ManagedObject collection.
@@ -38,7 +42,13 @@ public class ManagedObjectCollection extends IterableObjectPagination<ManagedObj
         final int pageSize
     ) {
         super(
-            managedObjectJson -> gson.fromJson(managedObjectJson, ManagedObject.class),
+                new ObjectMapper<ManagedObject>() {
+                    @Override
+                    public ManagedObject apply(JsonElement jsonElement) {
+                        return new ManagedObject(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+            //managedObjectJson -> gson.fromJson(managedObjectJson, ManagedObject.class),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

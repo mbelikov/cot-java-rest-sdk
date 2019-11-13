@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * The class that defines the methods on a collection of group references.
@@ -36,7 +37,14 @@ public class GroupReferenceCollection extends IterableObjectPagination<GroupRefe
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            groupReferenceJson -> new GroupReference(gson.fromJson(groupReferenceJson, ExtensibleObject.class)),
+                new ObjectMapper<GroupReference>() {
+                    @Override
+                    public GroupReference apply(JsonElement jsonElement) {
+                        return new GroupReference(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            groupReferenceJson -> new GroupReference(gson.fromJson(groupReferenceJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

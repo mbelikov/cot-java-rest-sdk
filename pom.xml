@@ -86,6 +86,20 @@
             <artifactId>gson</artifactId>
             <version>2.8.1</version>
         </dependency>
+
+        <!-- for bas64 enc/dec missing in java6 -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+        <!-- universal date & time lib -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.4</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
         <!-- Used for @Nullable and @Nonnull annotations. -->
         <dependency>

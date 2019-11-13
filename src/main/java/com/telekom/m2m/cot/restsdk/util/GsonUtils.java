@@ -49,7 +49,7 @@ public class GsonUtils {
                 .registerTypeAdapter(Progress.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(Binary.class, new BinarySerializer())
 
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
         if (pretty) {
             builder.setPrettyPrinting();

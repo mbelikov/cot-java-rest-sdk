@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Created by Andreas Dyck on 27.07.17.
@@ -32,7 +34,13 @@ public class AuditRecordCollection extends IterableObjectPagination<AuditRecord>
         final Filter.FilterBuilder filterBuilder
     ) {
         super(
-            jsonAuditRecord ->  new AuditRecord(gson.fromJson(jsonAuditRecord, ExtensibleObject.class)),
+                new ObjectMapper<AuditRecord>() {
+                    @Override
+                    public AuditRecord apply(JsonElement jsonElement) {
+                        return new AuditRecord(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+            //jsonAuditRecord ->  new AuditRecord(gson.fromJson(jsonAuditRecord, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,

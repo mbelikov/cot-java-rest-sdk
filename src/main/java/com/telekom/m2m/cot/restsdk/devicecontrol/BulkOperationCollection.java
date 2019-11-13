@@ -1,13 +1,17 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Represents a pageable BulkOperation collection.
@@ -41,7 +45,14 @@ public class BulkOperationCollection extends IterableObjectPagination<BulkOperat
         final int pageSize
     ) {
         super(
-            bulkOperationJson -> new BulkOperation(gson.fromJson(bulkOperationJson, ExtensibleObject.class)),
+                new ObjectMapper<BulkOperation>() {
+                    @Override
+                    public BulkOperation apply(JsonElement jsonElement) {
+                        return new BulkOperation(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            bulkOperationJson -> new BulkOperation(gson.fromJson(bulkOperationJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,
@@ -62,8 +73,19 @@ public class BulkOperationCollection extends IterableObjectPagination<BulkOperat
     public BulkOperation[] getBulkOperations() {
         final JsonArray jsonBulkOperations = getJsonArray();
 
-        return (jsonBulkOperations == null) ? new BulkOperation[0] : StreamSupport.stream(jsonBulkOperations.spliterator(), false).
-                map(objectMapper).
-                toArray(BulkOperation[]::new);
+        if (jsonBulkOperations == null) return new BulkOperation[0];
+
+        Iterator<JsonElement> it = jsonBulkOperations.iterator();
+        final ArrayList<BulkOperation> al = new ArrayList<>();
+        while (it.hasNext()) {
+            al.add( objectMapper.apply(it.next()) );
+        }
+
+        BulkOperation[] res = new BulkOperation[al.size()];
+        return al.toArray(res);
+
+//        return (jsonBulkOperations == null) ? new BulkOperation[0] : StreamSupport.stream(jsonBulkOperations.spliterator(), false).
+//                map(objectMapper).
+//                toArray(BulkOperation[]::new);
     }
 }

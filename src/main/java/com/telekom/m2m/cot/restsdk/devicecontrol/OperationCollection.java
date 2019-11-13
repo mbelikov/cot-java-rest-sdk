@@ -1,13 +1,18 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.audit.AuditRecord;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Represents a pageable Operation collection.
@@ -41,7 +46,14 @@ public class OperationCollection  extends IterableObjectPagination<Operation> {
         final int pageSize
     ) {
         super(
-            operationJson -> new Operation(gson.fromJson(operationJson, ExtensibleObject.class)),
+                new ObjectMapper<Operation>() {
+                    @Override
+                    public Operation apply(JsonElement jsonElement) {
+                        return new Operation(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+
+//            operationJson -> new Operation(gson.fromJson(operationJson, ExtensibleObject.class)),
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,
@@ -62,8 +74,19 @@ public class OperationCollection  extends IterableObjectPagination<Operation> {
     public Operation[] getOperations() {
         final JsonArray jsonOperations = getJsonArray();
 
-        return (jsonOperations == null) ? new Operation[0] : StreamSupport.stream(jsonOperations.spliterator(), false).
-                map(objectMapper).
-                toArray(Operation[]::new);
+        if (jsonOperations == null) return new Operation[0];
+
+        Iterator<JsonElement> it = jsonOperations.iterator();
+        final ArrayList<Operation> al = new ArrayList<>();
+        while (it.hasNext()) {
+            al.add( objectMapper.apply(it.next()) );
+        }
+
+        Operation[] res = new Operation[al.size()];
+        return al.toArray(res);
+
+//        return (jsonOperations == null) ? new Operation[0] : StreamSupport.stream(jsonOperations.spliterator(), false).
+//                map(objectMapper).
+//                toArray(Operation[]::new);
     }
 }

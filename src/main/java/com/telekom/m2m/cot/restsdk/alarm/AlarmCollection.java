@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+import com.telekom.m2m.cot.restsdk.util.ObjectMapper;
 
 /**
  * Created by Patrick Steinert on 24.11.16.
@@ -37,14 +38,19 @@ public class AlarmCollection extends IterableObjectPagination<Alarm> {
         final int pageSize
     ) {
         super(
-            jsonAlarm -> new Alarm(gson.fromJson(jsonAlarm, ExtensibleObject.class)),
-            cloudOfThingsRestClient,
-            relativeApiUrl,
-            gson,
-            COLLECTION_CONTENT_TYPE,
-            COLLECTION_ELEMENT_NAME,
-            filterBuilder,
-            pageSize
+                new ObjectMapper<Alarm>() {
+                    @Override
+                    public Alarm apply(JsonElement jsonElement) {
+                        return new Alarm(gson.fromJson(jsonElement, ExtensibleObject.class));
+                    }
+                },
+                cloudOfThingsRestClient,
+                relativeApiUrl,
+                gson,
+                COLLECTION_CONTENT_TYPE,
+                COLLECTION_ELEMENT_NAME,
+                filterBuilder,
+                pageSize
         );
     }
 
