@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.smartrest;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.StringJoiner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,7 +118,7 @@ public class SmartCepConnector implements Runnable {
                     MSG_REALTIME_SUBSCRIBE +
                       "," + clientId +
                       "," + channel +
-                      (xIds.isEmpty() ? "" : "," + String.join(",", xIds)));
+                      (xIds.isEmpty() ? "" : "," + StringJoiner.join(",", xIds)));
             cloudOfThingsRestClient.doSmartRealTimeRequest(smartRequest);
         }
     }
@@ -393,7 +394,7 @@ public class SmartCepConnector implements Runnable {
 
         // Unfortunately we need one request for each channel.
         for (Map.Entry<String, Set<String>> entry: subscriptions.entrySet()) {
-            String xIds = String.join(",", entry.getValue());
+            String xIds = StringJoiner.join(",", entry.getValue());
             SmartRequest smartRequest = new SmartRequest(
                     xId,
                     MSG_REALTIME_SUBSCRIBE + ","

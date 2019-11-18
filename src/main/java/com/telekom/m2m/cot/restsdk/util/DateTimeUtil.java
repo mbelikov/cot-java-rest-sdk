@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk.util;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -21,6 +22,11 @@ public class DateTimeUtil {
      */
     public static String convertDateToString(Date date) {
         return fmt.print( new DateTime(date.getTime()) );
+    }
+
+    public static String convertDateToUTCString(Date date) {
+        final DateTime utc = new DateTime(date.getTime()).withZone(DateTimeZone.UTC);
+        return fmt.print( utc );
     }
 
     public static String urlfy(String src) {

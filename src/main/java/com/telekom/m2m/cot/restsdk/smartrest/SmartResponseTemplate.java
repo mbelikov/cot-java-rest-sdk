@@ -1,7 +1,8 @@
 package com.telekom.m2m.cot.restsdk.smartrest;
 
+import com.telekom.m2m.cot.restsdk.util.StringJoiner;
+
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 
 /**
@@ -51,8 +52,16 @@ public class SmartResponseTemplate extends SmartTemplate {
      */
     @Override
     public String toString() {
-        String patterns = Arrays.stream(pattern).map(this::escape).collect(Collectors.joining(", "));
-        return String.join(",", msgId, escape(base), escape(condition), patterns);
+//        String patterns = Arrays.stream(pattern).map(this::escape).collect(Collectors.joining(", "));
+        final String tmp[] = Arrays.copyOf(pattern, pattern.length);
+
+        for (int i = 0; i < tmp.length; ++i) {
+            tmp[i] = escape(tmp[i]);
+        }
+
+        final String patterns = StringJoiner.join(", ", tmp);
+
+        return StringJoiner.join(",", msgId, escape(base), escape(condition), patterns);
     }
 
 

@@ -2,15 +2,12 @@ package com.telekom.m2m.cot.restsdk.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Simplifies iteration over paged result by providing access to paged objects.
@@ -120,7 +117,11 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
                 if (hasNext) {
                     pagination.next();
                 }
-                return Optional.ofNullable(itemsOnPage).orElseGet(JsonArray::new);
+                if (itemsOnPage == null) {
+                    return new JsonArray();
+                } else {
+                    return itemsOnPage;
+                }
             }
         };
     }

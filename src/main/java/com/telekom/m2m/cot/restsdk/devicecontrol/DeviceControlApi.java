@@ -3,15 +3,8 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.FilterBy;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.*;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -260,10 +253,7 @@ public class DeviceControlApi {
 
         if(bulkOperation.has("startDate")) {
             // curiously CoT platform accepts only a UTC time zone at updating the start date in a different way from creation of a bulk operation
-            Instant instant = bulkOperation.getStartDate().toInstant();
-            ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant,
-                    ZoneId.systemDefault());
-            extensibleObject.set("startDate", zonedDateTime.format(DateTimeFormatter.ISO_INSTANT));
+            extensibleObject.set("startDate", DateTimeUtil.convertDateToUTCString(bulkOperation.getStartDate()));
         }
 
         if(bulkOperation.has("creationRamp")) {

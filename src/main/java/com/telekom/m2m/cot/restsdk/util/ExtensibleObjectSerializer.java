@@ -46,6 +46,11 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                 object.add(key, sourceObject);
                 continue;
             }
+
+            if (value instanceof Date) {
+                object.add(key, new JsonPrimitive( DateTimeUtil.convertDateToString((Date)value) ));
+                continue;
+            }
             object.add(key, context.serialize(value));
         }
         return object;

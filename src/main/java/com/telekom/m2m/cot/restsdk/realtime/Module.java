@@ -82,7 +82,10 @@ public class Module {
      */
     public void setStatements(List<String> statements) {
         this.statements = new ArrayList<>(statements.size());
-        statements.forEach(this::addStatement);
+
+        for (String statement : statements) {
+            addStatement(statement);
+        }
     }
 
     /**

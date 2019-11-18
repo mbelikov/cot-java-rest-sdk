@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.telekom.m2m.cot.restsdk.util.StringJoiner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -61,7 +62,7 @@ public class CepModulesIT {
         assertEquals(myModule.getName(), name);
         assertEquals(myModule.getId(), moduleId);
         assertEquals(myModule.getStatus(), Module.Status.DEPLOYED);
-        assertEquals(myModule.getStatements().size(), 2);
+        assertEquals(myModule.getStatements().size(), 2, "Expected 2 module with 2 statemets, got with:\n" + StringJoiner.join("\n", myModule.getStatements()));
         assertEquals(myModule.getStatements().get(0), "@Name(\"s1\") select * from EventCreated.win:time(1 hour);");
         assertEquals(myModule.getStatements().get(1), "@Name(\"s2\") insert into CreatedEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events;");
     }

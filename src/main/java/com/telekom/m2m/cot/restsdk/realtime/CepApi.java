@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.StringJoiner;
 
 /**
  * The class that defines the CepApi. CEP stands for Complex-Event-Processing.
@@ -56,7 +57,7 @@ public class CepApi {
      * @return the same Module instance
      */
     public Module createModule(Module module) {
-        String data = "module " + module.getName() + ";" + join("\n", module.getStatements());
+        String data = "module " + module.getName() + ";" + StringJoiner.join("\n", module.getStatements());
 
         String response = cloudOfThingsRestClient.doFormUpload(data, "file", MODULES_API, "text/plain");
 
@@ -106,7 +107,7 @@ public class CepApi {
 
         cloudOfThingsRestClient.doPutRequest(json, MODULES_API +"/"+ module.getId(), CONTENT_TYPE_MODULES);
 
-        String data = "module " + module.getName() + ";" + join("\n", module.getStatements());
+        String data = "module " + module.getName() + ";" + StringJoiner.join("\n", module.getStatements());
         // The update doesn't need to be multipart/form-data.
         // And: the ID of the module doesn't seem to change. It is updated in place.
         String responseJson = cloudOfThingsRestClient.doPutRequest(data, MODULES_API +"/"+ module.getId(), "text/plain", CONTENT_TYPE_MODULES);
@@ -120,33 +121,5 @@ public class CepApi {
      */
     public void deleteModule(String id) {
         cloudOfThingsRestClient.delete(id, MODULES_API);
-    }
-
-    static class StringJoiner {
-        final String delim;
-        final StringBuffer internal = new StringBuffer();
-
-        public StringJoiner(String delim) {
-            this.delim = delim;
-        }
-
-        public void add(String next) {
-            this.internal
-                    .append(this.delim)
-                    .append(next);
-        }
-
-        public String result() {
-            return this.internal.toString();
-        }
-    }
-
-    private String join(String delim, List<String> strings) {
-        final StringJoiner sj = new StringJoiner(delim);
-        final Iterator<String> it = strings.iterator();
-        while (it.hasNext()) {
-            sj.add(it.next());
-        }
-        return sj.toString();
     }
 }

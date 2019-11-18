@@ -1,6 +1,8 @@
 package com.telekom.m2m.cot.restsdk.smartrest;
 
 
+import com.telekom.m2m.cot.restsdk.util.StringJoiner;
+
 /**
  * A SmartRequestTemplate is used server side to transform a SmartREST request into a regular REST request.
  *
@@ -59,7 +61,7 @@ public class SmartRequestTemplate extends SmartTemplate {
      */
     @Override
     public String toString() {
-        return String.join(",", msgId, method, resourceUri, escape(contentType), escape(accept), escape(placeholder), (values == null) ? "" : String.join(" ", values), escape(templateString));
+        return StringJoiner.join(",", msgId, method, resourceUri, escape(contentType), escape(accept), escape(placeholder), (values == null) ? "" : StringJoiner.join(" ", values), escape(templateString));
     }
 
 
